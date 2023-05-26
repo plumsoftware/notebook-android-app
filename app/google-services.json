@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "471811710637",
+    "project_id": "notebook-dd4d0",
+    "storage_bucket": "notebook-dd4d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471811710637:android:ad393953d75e8fa5253024",
+        "android_client_info": {
+          "package_name": "ru.plumsoftware.notebook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471811710637-u42nkf33krbg6a8g2scajfavm75dff1j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpKFnX2U2GblmHOTLGB73JLMvThBBflpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471811710637-u42nkf33krbg6a8g2scajfavm75dff1j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

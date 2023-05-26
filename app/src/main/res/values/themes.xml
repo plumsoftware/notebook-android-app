@@ -1,0 +1,56 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Блокнот" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary_color_5</item>
+        <item name="colorPrimaryVariant">@color/primary_color_5</item>
+        <item name="colorOnPrimary">@color/primary_color_5</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/primary_color_3</item>
+        <item name="colorSecondaryVariant">@color/primary_color_2</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <!-- Navigation bar color. -->
+        <item name="android:navigationBarColor">@color/black</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <!-- Window. -->
+        <item name="android:windowBackground">?android:attr/statusBarColor</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="BottomSheetTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary_color_5</item>
+        <item name="colorPrimaryVariant">@color/primary_color_5</item>
+        <item name="colorOnPrimary">@color/primary_color_5</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/primary_color_3</item>
+        <item name="colorSecondaryVariant">@color/primary_color_2</item>
+        <item name="colorOnSecondary">@color/black</item>
+    </style>
+
+    <style name="CustomProgressDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/CustomProgressDialogAnimation</item>
+    </style>
+
+    <style name="CustomProgressDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+</resources>
