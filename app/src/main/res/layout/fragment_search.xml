@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#494949"
-    tools:context=".SearchFragment">
+    tools:context=".fragments.SearchFragment">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

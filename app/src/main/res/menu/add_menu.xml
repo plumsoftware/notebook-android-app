@@ -11,4 +11,10 @@
         android:icon="@drawable/ic_color"
         android:title="Цвет"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/pick_time"
+        android:icon="@drawable/ic_time"
+        android:title="Время"
+        app:showAsAction="ifRoom" />
 </menu>

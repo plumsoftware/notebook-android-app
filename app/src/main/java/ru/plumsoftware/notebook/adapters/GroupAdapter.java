@@ -2,9 +2,7 @@ package ru.plumsoftware.notebook.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -12,10 +10,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,18 +18,13 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import ru.plumsoftware.notebook.MainActivity;
-import ru.plumsoftware.notebook.NotepadActivity;
+import ru.plumsoftware.notebook.activities.MainActivity;
+import ru.plumsoftware.notebook.activities.NotepadActivity;
 import ru.plumsoftware.notebook.R;
-import ru.plumsoftware.notebook.data.items.Colors;
 import ru.plumsoftware.notebook.data.items.Group;
-import ru.plumsoftware.notebook.data.items.Shape;
 import ru.plumsoftware.notebook.databases.DatabaseConstants;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {

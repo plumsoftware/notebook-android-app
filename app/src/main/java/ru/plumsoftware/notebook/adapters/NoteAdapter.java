@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.VibrationEffect;
@@ -13,9 +12,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -27,7 +23,6 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.yandex.mobile.ads.common.AdRequestError;
 import com.yandex.mobile.ads.common.ImpressionData;
 import com.yandex.mobile.ads.common.InitializationListener;
@@ -43,22 +38,16 @@ import com.yandex.mobile.ads.nativeads.NativeBulkAdLoadListener;
 import com.yandex.mobile.ads.nativeads.NativeBulkAdLoader;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
-import ru.plumsoftware.notebook.AddNoteActivity;
-import ru.plumsoftware.notebook.MainActivity;
-import ru.plumsoftware.notebook.NotepadActivity;
-import ru.plumsoftware.notebook.ProgressDialog;
+import ru.plumsoftware.notebook.activities.AddNoteActivity;
+import ru.plumsoftware.notebook.activities.MainActivity;
+import ru.plumsoftware.notebook.dialogs.ProgressDialog;
 import ru.plumsoftware.notebook.R;
-import ru.plumsoftware.notebook.data.items.Colors;
-import ru.plumsoftware.notebook.data.items.Group;
 import ru.plumsoftware.notebook.data.items.Note;
-import ru.plumsoftware.notebook.data.items.Shape;
 import ru.plumsoftware.notebook.databases.DatabaseConstants;
 import ru.plumsoftware.notebook.databases.SQLiteDatabaseManager;
 
@@ -236,7 +225,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
                 intent.putExtra("update", true);
                 intent.putExtra("note", note);
                 activity.startActivity(intent);
-                activity.overridePendingTransition(0,0);
+                activity.overridePendingTransition(0, 0);
                 activity.finish();
 
 //                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetTheme);
@@ -497,10 +486,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
                     @SuppressLint("NonConstantResourceId")
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context);
+                        sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
                         switch (item.getItemId()) {
                             case R.id.delete:
                                 progressDialog.showDialog();
-                                MainActivity.sqLiteDatabaseNotes.delete(DatabaseConstants._NOTES_TABLE_NAME, DatabaseConstants._ADD_NOTE_TIME + " = ? ", new String[]{Long.toString(addTime)});
+                                sqLiteDatabaseNotes.delete(DatabaseConstants._NOTES_TABLE_NAME, DatabaseConstants._ADD_NOTE_TIME + " = ? ", new String[]{Long.toString(addTime)});
 //                                NotepadActivity.reloadRecyclerView(context, activity);
                                 activity.startActivity(new Intent(context, MainActivity.class));
                                 activity.overridePendingTransition(0, 0);
@@ -516,8 +507,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
                                 contentValues.put(DatabaseConstants._IS_LIKED, 0);
                                 contentValues.put(DatabaseConstants._IS_PINNED, 0);
                                 contentValues.put(DatabaseConstants._ADD_NOTE_TIME, note.getAddNoteTime());
-                                SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context);
-                                sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
                                 sqLiteDatabaseNotes.update(DatabaseConstants._NOTES_TABLE_NAME, contentValues, DatabaseConstants._ADD_NOTE_TIME + " = ?", new String[]{Long.toString(addTime)});
 //                                NotepadActivity.reloadRecyclerView(context, activity);
                                 activity.startActivity(new Intent(context, MainActivity.class));
