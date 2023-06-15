@@ -22,6 +22,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -80,6 +81,7 @@ public class AddNoteActivity extends AppCompatActivity {
         EditText tvTitle = (EditText) findViewById(R.id.Title);
         EditText tvText = (EditText) findViewById(R.id.Text);
         cardViewBtnDone = (CardView) findViewById(R.id.cardBtnDoneUltra);
+        TextView textView5 = (TextView) findViewById(R.id.textView5);
         SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(this);
         sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
         noteTime = System.currentTimeMillis();
@@ -99,6 +101,7 @@ public class AddNoteActivity extends AppCompatActivity {
             cardViewBtnDone.setCardBackgroundColor(color);
             tvTitle.setText(note.getNoteName());
             tvText.setText(note.getNoteText());
+            textView5.setText("РЕДАКТИРОВАТЬ");
         } else {
             toolbar.setTitle("Добавить заметку");
             toolbar.setSubtitle(new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(noteTime)));
@@ -171,6 +174,8 @@ public class AddNoteActivity extends AppCompatActivity {
                     note.setOpacity(opacityRes);
                     note.setAddNoteTime(noteTime);
                     updateNote(note);
+//                    deleteNote(noteTime);
+//                    saveNote(noteTitle, text, opacityRes, color, noteTime);
                     onBackPressed();
                 } else {
                     saveNote(noteTitle, text, opacityRes, color, noteTime);
@@ -230,7 +235,11 @@ public class AddNoteActivity extends AppCompatActivity {
         contentValues.put(DatabaseConstants._IS_LIKED, note.getIsLiked());
         contentValues.put(DatabaseConstants._IS_PINNED, note.getIsPinned());
         contentValues.put(DatabaseConstants._ADD_NOTE_TIME, note.getAddNoteTime());
-        sqLiteDatabaseNotes.update(DatabaseConstants._NOTES_TABLE_NAME, contentValues, DatabaseConstants._ADD_NOTE_TIME + " = ?", new String[]{Long.toString(note.getAddNoteTime())});
+        sqLiteDatabaseNotes.update(DatabaseConstants._NOTES_TABLE_NAME, contentValues, DatabaseConstants._NOTE_NAME + " = ?", new String[]{note.getNoteName()});
+    }
+
+    private void deleteNote(long time) {
+        sqLiteDatabaseNotes.delete(DatabaseConstants._NOTES_TABLE_NAME, DatabaseConstants._ADD_NOTE_TIME + "= ?", new String[]{String.valueOf(time)});
     }
 
     @SuppressLint("NonConstantResourceId")
