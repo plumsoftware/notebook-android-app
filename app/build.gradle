@@ -10,8 +10,8 @@ android {
         applicationId "ru.plumsoftware.notebook"
         minSdk 27
         targetSdk 33
-        versionCode 13
-        versionName "1.2.5 - Bug-fix"
+        versionCode 14
+        versionName "1.2.6 - Bug-fix"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,7 +41,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     //Yandex ads
-    implementation 'com.yandex.android:mobileads:5.8.0'
+    implementation 'com.yandex.android:mobileads:5.9.0'
     implementation 'com.yandex.android:mobmetricalib:5.2.0'
 
     //Glide
