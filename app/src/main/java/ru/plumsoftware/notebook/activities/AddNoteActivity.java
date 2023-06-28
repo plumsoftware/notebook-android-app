@@ -235,7 +235,7 @@ public class AddNoteActivity extends AppCompatActivity {
         contentValues.put(DatabaseConstants._IS_LIKED, note.getIsLiked());
         contentValues.put(DatabaseConstants._IS_PINNED, note.getIsPinned());
         contentValues.put(DatabaseConstants._ADD_NOTE_TIME, note.getAddNoteTime());
-        sqLiteDatabaseNotes.update(DatabaseConstants._NOTES_TABLE_NAME, contentValues, DatabaseConstants._NOTE_NAME + " = ?", new String[]{note.getNoteName()});
+        sqLiteDatabaseNotes.update(DatabaseConstants._NOTES_TABLE_NAME, contentValues, DatabaseConstants._ID + " = ?", new String[]{String.valueOf(note.getId())});
     }
 
     private void deleteNote(long time) {
