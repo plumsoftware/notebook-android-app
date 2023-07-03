@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 9,
-      "versionName": "1.1.9-C",
+      "versionCode": 14,
+      "versionName": "1.2.6 - Bug-fix",
       "outputFile": "app-release.apk"
     }
   ],
