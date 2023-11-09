@@ -155,8 +155,6 @@ public class MainMenuActivity extends AppCompatActivity {
         });
 
         final NativeAdRequestConfiguration nativeAdRequestConfiguration = new NativeAdRequestConfiguration.Builder("R-M-1957919-1").build();
-        //final NativeAdRequestConfiguration nativeAdRequestConfiguration = new NativeAdRequestConfiguration.Builder("R-M-1769412-1").build();
-        //final NativeAdRequestConfiguration nativeAdRequestConfiguration = new NativeAdRequestConfiguration.Builder("R-M-1742395-1").build();
         nativeBulkAdLoader.loadAds(nativeAdRequestConfiguration, 1);
 
 //        Clickers
