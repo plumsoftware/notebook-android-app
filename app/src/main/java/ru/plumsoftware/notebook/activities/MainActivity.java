@@ -64,86 +64,86 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context);
         sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
         List<Note> notes = new ArrayList<>();
-        List<Group> groups = new ArrayList<>();
+//        List<Group> groups = new ArrayList<>();
 
-        String groupName;
+//        String groupName;
 
-        if (getIntent().getStringExtra("group") != null) {
-            groupName = getIntent().getStringExtra("group");
-
-            List<Long> addTimeList = new ArrayList<>();
-
-//        Pinned notes
-            @SuppressLint("Recycle") Cursor cursor = sqLiteDatabaseNotes.query(
-                    DatabaseConstants._GROUPS_TABLE_NAME,   // The table to query
-                    null,             // The array of columns to return (pass null to get all)
-                    DatabaseConstants._GROUP_NAME + " = ?",              // The columns for the WHERE clause
-                    new String[]{groupName},          // The values for the WHERE clause
-                    null,                   // don't group the rows
-                    null,                   // don't filter by row groups
-                    //"DATE_FORMAT("+new SimpleDateFormat("")+", '%m%d')"               // The sort order
-                    DatabaseConstants._ADD_GROUP_TIME + " DESC"
-            );
-
-            while (cursor.moveToNext()) {
-//            Read data
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._ID));
-                int color = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_COLOR));
-                String name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._GROUP_NAME));
-                long addNoteTime = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_NOTE_TIME));
-                long addGroupTime = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_GROUP_TIME));
-
-                //Group group = new Group(name, id, color, addGroupTime, addNoteTime);
-                addTimeList.add(addNoteTime);
-                //groups.add(group);
-            }
-            cursor.close();
-
-            for (int i = 0; i < addTimeList.size(); i++) {
-                @SuppressLint("Recycle") Cursor cursor1 = sqLiteDatabaseNotes.query(
-                        DatabaseConstants._NOTES_TABLE_NAME,   // The table to query
-                        null,             // The array of columns to return (pass null to get all)
-                        DatabaseConstants._ADD_NOTE_TIME + " = ?",              // The columns for the WHERE clause
-                        new String[]{Long.toString(addTimeList.get(i))},          // The values for the WHERE clause
-                        null,                   // don't group the rows
-                        null,                   // don't filter by row groups
-                        DatabaseConstants._ADD_NOTE_TIME + " DESC"               // The sort order
-                );
-
-                while (cursor1.moveToNext()) {
-//            Read data
-                    int id = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._ID));
-//            int count = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._COUNT));
-                    int notePromoResId = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_PROMO));
-                    int isPinned = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._IS_PINNED));
-                    int isLiked = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._IS_LIKED));
-                    int colorRes = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_COLOR));
-                    String noteName = cursor1.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_NAME));
-                    String noteText = cursor1.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_TEXT));
-                    long addTime = cursor1.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_NOTE_TIME));
-
-                    Note note = new Note(
-                            id,
-                            0,
-                            notePromoResId,
-                            isPinned,
-                            isLiked,
-                            colorRes,
-                            noteName,
-                            noteText,
-                            addTime,
-                            0
-                    );
-                    notes.add(note);
-                }
-                cursor1.close();
-            }
-            Toast.makeText(context, new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(addTimeList.get(0))), Toast.LENGTH_SHORT).show();
-            //Toast.makeText(context, Integer.toString(notes.size()), Toast.LENGTH_SHORT).show();
-        } else {
-            notes = loadNotes(context);
-            //groups = loadGroups(context);
-        }
+//        if (getIntent().getStringExtra("group") != null) {
+//            groupName = getIntent().getStringExtra("group");
+//
+//            List<Long> addTimeList = new ArrayList<>();
+//
+////        Pinned notes
+//            @SuppressLint("Recycle") Cursor cursor = sqLiteDatabaseNotes.query(
+//                    DatabaseConstants._GROUPS_TABLE_NAME,   // The table to query
+//                    null,             // The array of columns to return (pass null to get all)
+//                    DatabaseConstants._GROUP_NAME + " = ?",              // The columns for the WHERE clause
+//                    new String[]{groupName},          // The values for the WHERE clause
+//                    null,                   // don't group the rows
+//                    null,                   // don't filter by row groups
+//                    //"DATE_FORMAT("+new SimpleDateFormat("")+", '%m%d')"               // The sort order
+//                    DatabaseConstants._ADD_GROUP_TIME + " DESC"
+//            );
+//
+//            while (cursor.moveToNext()) {
+////            Read data
+//                int id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._ID));
+//                int color = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_COLOR));
+//                String name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._GROUP_NAME));
+//                long addNoteTime = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_NOTE_TIME));
+//                long addGroupTime = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_GROUP_TIME));
+//
+//                //Group group = new Group(name, id, color, addGroupTime, addNoteTime);
+//                addTimeList.add(addNoteTime);
+//                //groups.add(group);
+//            }
+//            cursor.close();
+//
+//            for (int i = 0; i < addTimeList.size(); i++) {
+//                @SuppressLint("Recycle") Cursor cursor1 = sqLiteDatabaseNotes.query(
+//                        DatabaseConstants._NOTES_TABLE_NAME,   // The table to query
+//                        null,             // The array of columns to return (pass null to get all)
+//                        DatabaseConstants._ADD_NOTE_TIME + " = ?",              // The columns for the WHERE clause
+//                        new String[]{Long.toString(addTimeList.get(i))},          // The values for the WHERE clause
+//                        null,                   // don't group the rows
+//                        null,                   // don't filter by row groups
+//                        DatabaseConstants._ADD_NOTE_TIME + " DESC"               // The sort order
+//                );
+//
+//                while (cursor1.moveToNext()) {
+////            Read data
+//                    int id = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._ID));
+////            int count = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._COUNT));
+//                    int notePromoResId = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_PROMO));
+//                    int isPinned = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._IS_PINNED));
+//                    int isLiked = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._IS_LIKED));
+//                    int colorRes = cursor1.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_COLOR));
+//                    String noteName = cursor1.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_NAME));
+//                    String noteText = cursor1.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_TEXT));
+//                    long addTime = cursor1.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_NOTE_TIME));
+//
+//                    Note note = new Note(
+//                            id,
+//                            0,
+//                            notePromoResId,
+//                            isPinned,
+//                            isLiked,
+//                            colorRes,
+//                            noteName,
+//                            noteText,
+//                            addTime,
+//                            0
+//                    );
+//                    notes.add(note);
+//                }
+//                cursor1.close();
+//            }
+//            Toast.makeText(context, new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(addTimeList.get(0))), Toast.LENGTH_SHORT).show();
+//            //Toast.makeText(context, Integer.toString(notes.size()), Toast.LENGTH_SHORT).show();
+//        } else {
+        notes = loadNotes(context);
+        //groups = loadGroups(context);
+//        }
 
         NoteAdapter noteAdapter = new NoteAdapter(context, activity, notes, 1);
         //GroupAdapter groupAdapter = new GroupAdapter(context, activity, groups, 1);
@@ -366,6 +366,10 @@ public class MainActivity extends AppCompatActivity {
     public static List<Note> loadNotes(Context context) {
         List<Note> notes = new ArrayList<>();
 
+        if (!sqLiteDatabaseNotes.isOpen()) {
+            SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context);
+            sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
+        }
 //        Pinned notes
         @SuppressLint("Recycle") Cursor cursor = sqLiteDatabaseNotes.query(
                 DatabaseConstants._NOTES_TABLE_NAME,   // The table to query
