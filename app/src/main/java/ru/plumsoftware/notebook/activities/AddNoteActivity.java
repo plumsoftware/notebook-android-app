@@ -28,11 +28,16 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
+import com.yandex.mobile.ads.common.AdError;
 import com.yandex.mobile.ads.common.AdRequest;
+import com.yandex.mobile.ads.common.AdRequestConfiguration;
 import com.yandex.mobile.ads.common.AdRequestError;
 import com.yandex.mobile.ads.common.ImpressionData;
+import com.yandex.mobile.ads.common.MobileAds;
 import com.yandex.mobile.ads.interstitial.InterstitialAd;
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener;
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener;
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoader;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,8 +67,10 @@ public class AddNoteActivity extends AppCompatActivity {
     private long noteTime = 0L;
     private CardView cardViewBtnDone;
     private SQLiteDatabase sqLiteDatabaseNotes;
-    private InterstitialAd interstitialAd;
-    private AdRequest adRequest;
+    @Nullable
+    private InterstitialAd mInterstitialAd = null;
+    @Nullable
+    private InterstitialAdLoader mInterstitialAdLoader = null;
     private ProgressDialog progressDialog;
 
     private Calendar dateAndTime = Calendar.getInstance();
@@ -73,6 +80,10 @@ public class AddNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
+
+        MobileAds.initialize(this, () -> {
+
+        });
 
         toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
         toolbar = findViewById(R.id.toolbar);
@@ -107,58 +118,58 @@ public class AddNoteActivity extends AppCompatActivity {
             toolbar.setSubtitle(new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(noteTime)));
         }
 
-        interstitialAd = new InterstitialAd(this);
-        interstitialAd.setAdUnitId("R-M-1957919-2");
-//        interstitialAd.setAdUnitId("R-M-1737730-2");
-        adRequest = new AdRequest.Builder().build();
-        interstitialAd.setInterstitialAdEventListener(new InterstitialAdEventListener() {
+        mInterstitialAdLoader = new InterstitialAdLoader(this);
+
+        mInterstitialAdLoader.setAdLoadListener(new InterstitialAdLoadListener() {
             @Override
-            public void onAdLoaded() {
+            public void onAdLoaded(@NonNull final InterstitialAd interstitialAd) {
+                mInterstitialAd = interstitialAd;
                 progressDialog.dismiss();
-                interstitialAd.show();
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.setAdEventListener(new InterstitialAdEventListener() {
+                        @Override
+                        public void onAdShown() {
+
+                        }
+
+                        @Override
+                        public void onAdFailedToShow(@NonNull AdError adError) {
+
+                        }
+
+                        @Override
+                        public void onAdDismissed() {
+                            startActivity(new Intent(AddNoteActivity.this, MainActivity.class));
+                            overridePendingTransition(0, 0);
+                            finish();
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+                            startActivity(new Intent(AddNoteActivity.this, MainActivity.class));
+                            overridePendingTransition(0, 0);
+                            finish();
+                        }
+
+                        @Override
+                        public void onAdImpression(@Nullable ImpressionData impressionData) {
+
+                        }
+                    });
+                }
+                mInterstitialAd.show(AddNoteActivity.this);
             }
 
             @Override
-            public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
-                progressDialog.dismiss();
+            public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
                 Toast.makeText(AddNoteActivity.this, adRequestError.getDescription(), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(AddNoteActivity.this, MainActivity.class));
                 overridePendingTransition(0, 0);
                 finish();
             }
-
-            @Override
-            public void onAdShown() {
-
-            }
-
-            @Override
-            public void onAdDismissed() {
-                startActivity(new Intent(AddNoteActivity.this, MainActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-            }
-
-            @Override
-            public void onAdClicked() {
-
-            }
-
-            @Override
-            public void onLeftApplication() {
-
-            }
-
-            @Override
-            public void onReturnedToApplication() {
-
-            }
-
-            @Override
-            public void onImpression(@Nullable ImpressionData impressionData) {
-
-            }
         });
+
+//        interstitialAd.setAdUnitId("R-M-1957919-2");
 
         cardViewBtnDone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -339,7 +350,11 @@ public class AddNoteActivity extends AppCompatActivity {
     public void onBackPressed() {
 //        super.onBackPressed();
         progressDialog.showDialog();
-        interstitialAd.loadAd(adRequest);
+        if (mInterstitialAdLoader != null) {
+            final AdRequestConfiguration adRequestConfiguration =
+                    new AdRequestConfiguration.Builder("R-M-1957919-2").build();
+            mInterstitialAdLoader.loadAd(adRequestConfiguration);
+        }
     }
 
     private void setDateAndTime() {
