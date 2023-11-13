@@ -4,20 +4,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -29,7 +35,6 @@ import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.yandex.mobile.ads.common.AdError;
-import com.yandex.mobile.ads.common.AdRequest;
 import com.yandex.mobile.ads.common.AdRequestConfiguration;
 import com.yandex.mobile.ads.common.AdRequestError;
 import com.yandex.mobile.ads.common.ImpressionData;
@@ -58,8 +63,13 @@ import ru.plumsoftware.notebook.data.items.Note;
 import ru.plumsoftware.notebook.data.items.Shape;
 import ru.plumsoftware.notebook.databases.DatabaseConstants;
 import ru.plumsoftware.notebook.databases.SQLiteDatabaseManager;
+import ru.plumsoftware.notebook.services.NotificationScheduler;
+import ru.plumsoftware.notebook.utilities.UniqueIdGenerator;
 
 public class AddNoteActivity extends AppCompatActivity {
+
+    private int REQUEST_CODE = 100;
+    private String notificationChannelId = "";
 
     private int
             color = 0xFFFFFF,
@@ -91,6 +101,7 @@ public class AddNoteActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         EditText tvTitle = (EditText) findViewById(R.id.Title);
         EditText tvText = (EditText) findViewById(R.id.Text);
+        CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
         cardViewBtnDone = (CardView) findViewById(R.id.cardBtnDoneUltra);
         TextView textView5 = (TextView) findViewById(R.id.textView5);
         SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(this);
@@ -105,9 +116,14 @@ public class AddNoteActivity extends AppCompatActivity {
             toolbar.setTitle("Редактировать заметку");
             toolbar.setSubtitle(new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(note.getAddNoteTime())));
 
+            Log.d("TAG", note.toString());
+
 //            Setup note data
             color = note.getColor();
             opacityRes = note.getOpacity();
+            notificationChannelId = note.getNotificationChannelId();
+            boolean i_n = note.getIsNotify() == 1;
+            checkBox.setChecked(i_n);
 
             cardViewBtnDone.setCardBackgroundColor(color);
             tvTitle.setText(note.getNoteName());
@@ -184,13 +200,20 @@ public class AddNoteActivity extends AppCompatActivity {
                     note.setColor(color);
                     note.setOpacity(opacityRes);
                     note.setAddNoteTime(noteTime);
+                    note.setIsNotify(checkBox.isChecked() ? 1 : 0);
+                    note.setNotificationChannelId(notificationChannelId);
+//                    note.setNotificationChannelId(UniqueIdGenerator.generateUniqueId_2());
                     updateNote(note);
 //                    deleteNote(noteTime);
 //                    saveNote(noteTitle, text, opacityRes, color, noteTime);
                     onBackPressed();
                 } else {
-                    saveNote(noteTitle, text, opacityRes, color, noteTime);
+                    saveNote(noteTitle, text, opacityRes, color, noteTime, checkBox.isChecked());
                     onBackPressed();
+                }
+
+                if (checkBox.isChecked()) {
+                    setAlarmManager(noteTime, noteTitle, color, notificationChannelId);
                 }
 
                 List<Group> groupList = GroupAdapter.addedGroups;
@@ -212,13 +235,50 @@ public class AddNoteActivity extends AppCompatActivity {
                 }
             }
         });
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ActivityCompat.checkSelfPermission(AddNoteActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        ActivityCompat.requestPermissions((Activity) AddNoteActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_CODE);
+                    }
+                }
+            }
+        });
     }
 
-    public void saveNote(String name, String text, int or, int c, long time) {
+    public void saveNote(String name, String text, int or, int c, long time, boolean isNotify) {
         if (name == null || name.isEmpty())
             name = "";
         if (text == null || text.isEmpty())
             text = "";
+
+        String notificationChannelId = UniqueIdGenerator.generateUniqueId();
+
+        int isNotifyInt;
+        if (isNotify) {
+            isNotifyInt = 1;
+        } else {
+            isNotifyInt = 0;
+        }
+
+        Note note = new Note(
+                0,
+                0,
+                or,
+                0,
+                0,
+                c,
+                name,
+                text,
+                time,
+                0,
+                notificationChannelId,
+                isNotifyInt
+        );
+
+        Log.d("TAG", note.toString());
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseConstants._NOTE_NAME, name);
@@ -228,6 +288,8 @@ public class AddNoteActivity extends AppCompatActivity {
         contentValues.put(DatabaseConstants._IS_LIKED, 0);
         contentValues.put(DatabaseConstants._IS_PINNED, 0);
         contentValues.put(DatabaseConstants._ADD_NOTE_TIME, time);
+        contentValues.put(DatabaseConstants._IS_NOTIFY, isNotifyInt);
+        contentValues.put(DatabaseConstants._CHANNEL_ID, notificationChannelId);
         sqLiteDatabaseNotes.insert(DatabaseConstants._NOTES_TABLE_NAME, null, contentValues);
 
         Snackbar
@@ -246,6 +308,8 @@ public class AddNoteActivity extends AppCompatActivity {
         contentValues.put(DatabaseConstants._IS_LIKED, note.getIsLiked());
         contentValues.put(DatabaseConstants._IS_PINNED, note.getIsPinned());
         contentValues.put(DatabaseConstants._ADD_NOTE_TIME, note.getAddNoteTime());
+        contentValues.put(DatabaseConstants._IS_NOTIFY, note.getIsNotify());
+        contentValues.put(DatabaseConstants._CHANNEL_ID, note.getNotificationChannelId());
         sqLiteDatabaseNotes.update(DatabaseConstants._NOTES_TABLE_NAME, contentValues, DatabaseConstants._ID + " = ?", new String[]{String.valueOf(note.getId())});
     }
 
@@ -385,4 +449,29 @@ public class AddNoteActivity extends AppCompatActivity {
                     .show();
         }
     };
+
+    //Alarm
+    @SuppressLint("ScheduleExactAlarm")
+    private void setAlarmManager(Long timeInMillis, String message, int color, String notificationChannelId) {
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(timeInMillis);
+//
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(this, NotificationReceiver.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+//
+//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+
+//        Intent serviceIntent = new Intent(this, NotificationService.class);
+//        serviceIntent.putExtra("timeInMillis", timeInMillis);
+//        ContextCompat.startForegroundService(this, serviceIntent);
+
+        NotificationScheduler.scheduleNotification(AddNoteActivity.this, timeInMillis, message, color, notificationChannelId);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

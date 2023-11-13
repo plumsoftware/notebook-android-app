@@ -104,13 +104,30 @@ package ru.plumsoftware.notebook.data.items;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Note implements Parcelable {
-    private int id, count, notePromoResId, isPinned, isLiked, color;
-    private String noteName, noteText;
+    private int id, count, notePromoResId, isPinned, isLiked, color, isNotify;
+    private String noteName, noteText, notificationChannelId;
     private long addNoteTime;
     private int opacity = 0x35674824;
 
-    public Note(int id, int count, int notePromoResId, int isPinned, int isLiked, int color, String noteName, String noteText, long addNoteTime, int opacity) {
+    public Note(
+            int id,
+            int count,
+            int notePromoResId,
+            int isPinned,
+            int isLiked,
+            int color,
+            String noteName,
+            String noteText,
+            long addNoteTime,
+            int opacity
+    ) {
         this.id = id;
         this.count = count;
         this.notePromoResId = notePromoResId;
@@ -134,6 +151,90 @@ public class Note implements Parcelable {
         noteText = in.readString();
         addNoteTime = in.readLong();
         opacity = in.readInt();
+        notificationChannelId = in.readString();
+        isNotify = in.readInt();
+    }
+
+    public Note(
+            int id,
+            int count,
+            int notePromoResId,
+            int isPinned,
+            int isLiked,
+            int color,
+            int isNotify,
+            String noteName,
+            String noteText,
+            String notificationChannelId,
+            long addNoteTime,
+            int opacity
+    ) {
+        this.id = id;
+        this.count = count;
+        this.notePromoResId = notePromoResId;
+        this.isPinned = isPinned;
+        this.isLiked = isLiked;
+        this.color = color;
+        this.isNotify = isNotify;
+        this.noteName = noteName;
+        this.noteText = noteText;
+        this.notificationChannelId = notificationChannelId;
+        this.addNoteTime = addNoteTime;
+        this.opacity = opacity;
+    }
+
+    public Note(
+            int id,
+            int count,
+            int notePromoResId,
+            int isPinned,
+            int isLiked,
+            int color,
+            String noteName,
+            String noteText,
+            long addNoteTime,
+            int opacity,
+            String notificationChannelId
+    ) {
+        this.id = id;
+        this.count = count;
+        this.notePromoResId = notePromoResId;
+        this.isPinned = isPinned;
+        this.isLiked = isLiked;
+        this.color = color;
+        this.noteName = noteName;
+        this.noteText = noteText;
+        this.addNoteTime = addNoteTime;
+        this.opacity = opacity;
+        this.notificationChannelId = notificationChannelId;
+    }
+
+    public Note(
+            int id,
+            int count,
+            int notePromoResId,
+            int isPinned,
+            int isLiked,
+            int color,
+            String noteName,
+            String noteText,
+            long addNoteTime,
+            int opacity,
+            String notificationChannelId,
+            int isNotify
+    ) {
+        this.id = id;
+        this.count = count;
+        this.notePromoResId = notePromoResId;
+        this.isPinned = isPinned;
+        this.isLiked = isLiked;
+        this.color = color;
+        this.noteName = noteName;
+        this.noteText = noteText;
+        this.addNoteTime = addNoteTime;
+        this.opacity = opacity;
+        this.notificationChannelId = notificationChannelId;
+        this.isNotify = isNotify;
     }
 
     public int getId() {
@@ -216,6 +317,22 @@ public class Note implements Parcelable {
         this.color = color;
     }
 
+    public String getNotificationChannelId() {
+        return notificationChannelId;
+    }
+
+    public void setNotificationChannelId(String notificationChannelId) {
+        this.notificationChannelId = notificationChannelId;
+    }
+
+    public int getIsNotify() {
+        return isNotify;
+    }
+
+    public void setIsNotify(int isNotify) {
+        this.isNotify = isNotify;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -233,6 +350,8 @@ public class Note implements Parcelable {
         dest.writeString(noteText);
         dest.writeLong(addNoteTime);
         dest.writeInt(opacity);
+        dest.writeString(notificationChannelId);
+        dest.writeInt(isNotify);
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -246,4 +365,24 @@ public class Note implements Parcelable {
             return new Note[size];
         }
     };
+
+    @NonNull
+    @Override
+    public String toString() {
+        return
+                Integer.toString(id) + "\n" +
+                        Integer.toString(count) + "\n" +
+                        Integer.toString(notePromoResId) + "\n" +
+                        Integer.toString(isPinned) + "\n" +
+                        Integer.toString(isLiked) + "\n" +
+                        Integer.toString(color) + "\n" +
+                        noteName + "\n" +
+                        noteText + "\n" +
+                        new SimpleDateFormat("yyyy.MM.dd, hh:mm:ss", Locale.getDefault()).format(new Date(addNoteTime)) + "\n" +
+                        Integer.toString(opacity) + "\n" +
+                        notificationChannelId + "\n" +
+                        Integer.toString(isNotify);
+
+
+    }
 }

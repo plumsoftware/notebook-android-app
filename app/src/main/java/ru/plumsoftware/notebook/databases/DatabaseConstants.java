@@ -16,6 +16,9 @@ public class DatabaseConstants implements BaseColumns {
     public static final String _IS_PINNED = "_is_pinned";
     public static final String _IS_LIKED = "_is_liked";
 
+    public static final String _CHANNEL_ID = "_notification_channel_id";
+    public static final String _IS_NOTIFY = "_is_notify";
+
     public static final String CREATE_NOTES_TABLE =
             "CREATE TABLE IF NOT EXISTS " + DatabaseConstants._NOTES_TABLE_NAME +
                     " (" + DatabaseConstants._ID + " INTEGER PRIMARY KEY," +
@@ -25,7 +28,9 @@ public class DatabaseConstants implements BaseColumns {
                     DatabaseConstants._NOTE_PROMO + " INTEGER," +
                     DatabaseConstants._IS_PINNED + " INTEGER," +
                     DatabaseConstants._NOTE_COLOR + " INTEGER," +
-                    DatabaseConstants._IS_LIKED + " INTEGER)";
+                    DatabaseConstants._IS_LIKED + " INTEGER," +
+                    DatabaseConstants._CHANNEL_ID + " TEXT," +
+                    DatabaseConstants._IS_NOTIFY + " INTEGER)";
 
     public static final String CREATE_GROUPS_TABLE =
             "CREATE TABLE IF NOT EXISTS " + DatabaseConstants._GROUPS_TABLE_NAME +

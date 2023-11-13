@@ -15,6 +15,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -393,6 +394,8 @@ public class MainActivity extends AppCompatActivity {
             String noteName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_NAME));
             String noteText = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_TEXT));
             long addTime = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_NOTE_TIME));
+            String notificationChannelId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._CHANNEL_ID));
+            int isNotify = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._IS_NOTIFY));
 
             Note note = new Note(
                     id,
@@ -404,8 +407,12 @@ public class MainActivity extends AppCompatActivity {
                     noteName,
                     noteText,
                     addTime,
-                    0
+                    0,
+                    notificationChannelId,
+                    isNotify
+
             );
+            Log.d("TAG", note.toString());
             notes.add(note);
         }
         cursor.close();
@@ -432,6 +439,8 @@ public class MainActivity extends AppCompatActivity {
             String noteName = cursor1.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_NAME));
             String noteText = cursor1.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_TEXT));
             long addTime = cursor1.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_NOTE_TIME));
+            String notificationChannelId = cursor1.getString(cursor1.getColumnIndexOrThrow(DatabaseConstants._CHANNEL_ID));
+            int isNotify = cursor1.getInt(cursor1.getColumnIndexOrThrow(DatabaseConstants._IS_NOTIFY));
 
             Note note = new Note(
                     id,
@@ -443,7 +452,9 @@ public class MainActivity extends AppCompatActivity {
                     noteName,
                     noteText,
                     addTime,
-                    0
+                    0,
+                    notificationChannelId,
+                    isNotify
             );
             notes.add(note);
         }
@@ -508,6 +519,8 @@ public class MainActivity extends AppCompatActivity {
             String noteName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_NAME));
             String noteText = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_TEXT));
             long addTime = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_NOTE_TIME));
+            String notificationChannelId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._CHANNEL_ID));
+            int isNotify = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants._IS_NOTIFY));
 
             Note note = new Note(
                     id,
@@ -519,7 +532,9 @@ public class MainActivity extends AppCompatActivity {
                     noteName,
                     noteText,
                     addTime,
-                    0
+                    0,
+                    notificationChannelId,
+                    isNotify
             );
             notes.add(note);
         }
@@ -547,6 +562,8 @@ public class MainActivity extends AppCompatActivity {
             String noteName = cursor1.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_NAME));
             String noteText = cursor1.getString(cursor.getColumnIndexOrThrow(DatabaseConstants._NOTE_TEXT));
             long addTime = cursor1.getLong(cursor.getColumnIndexOrThrow(DatabaseConstants._ADD_NOTE_TIME));
+            String notificationChannelId = cursor1.getString(cursor1.getColumnIndexOrThrow(DatabaseConstants._CHANNEL_ID));
+            int isNotify = cursor1.getInt(cursor1.getColumnIndexOrThrow(DatabaseConstants._IS_NOTIFY));
 
             if (noteName.contains(condition) || noteText.contains(condition) || new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(addTime)).contains(condition)) {
                 Note note = new Note(
@@ -559,7 +576,9 @@ public class MainActivity extends AppCompatActivity {
                         noteName,
                         noteText,
                         addTime,
-                        0
+                        0,
+                        notificationChannelId,
+                        isNotify
                 );
                 notes.add(note);
             }
