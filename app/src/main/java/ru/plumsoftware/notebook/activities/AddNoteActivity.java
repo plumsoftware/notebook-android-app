@@ -213,7 +213,14 @@ public class AddNoteActivity extends AppCompatActivity {
                 }
 
                 if (checkBox.isChecked()) {
-                    setAlarmManager(noteTime, noteTitle, color, notificationChannelId);
+                    if (!notificationChannelId.isEmpty()) {
+                        setAlarmManager(noteTime, noteTitle, color, notificationChannelId);
+                        Log.d("TAG", notificationChannelId);
+                    } else {
+                        notificationChannelId = UniqueIdGenerator.generateUniqueId();
+                        Log.d("TAG", notificationChannelId);
+                        setAlarmManager(noteTime, noteTitle, color, notificationChannelId);
+                    }
                 }
 
                 List<Group> groupList = GroupAdapter.addedGroups;
@@ -453,20 +460,6 @@ public class AddNoteActivity extends AppCompatActivity {
     //Alarm
     @SuppressLint("ScheduleExactAlarm")
     private void setAlarmManager(Long timeInMillis, String message, int color, String notificationChannelId) {
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(timeInMillis);
-//
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(this, NotificationReceiver.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-//
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-
-
-//        Intent serviceIntent = new Intent(this, NotificationService.class);
-//        serviceIntent.putExtra("timeInMillis", timeInMillis);
-//        ContextCompat.startForegroundService(this, serviceIntent);
-
         NotificationScheduler.scheduleNotification(AddNoteActivity.this, timeInMillis, message, color, notificationChannelId);
     }
 

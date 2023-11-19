@@ -11,6 +11,9 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import java.util.Calendar;
+import java.util.Random;
+
 import ru.plumsoftware.notebook.R;
 import ru.plumsoftware.notebook.activities.MainActivity;
 
@@ -31,7 +34,7 @@ public class NotificationUtils {
 
         // Создание канала уведомлений для Android 8.0 (Oreo) и выше
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "plumsoftware.notebook.notif_name";
+            CharSequence name = "plumsoftware.notebook.notif_name_" + CHANNEL_ID;
             String description = "plumsoftware.notebook.notif_channel_description";
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
@@ -57,6 +60,6 @@ public class NotificationUtils {
 
         // Отображение уведомления
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(0, builder.build());
+        notificationManager.notify(Calendar.getInstance().get(Calendar.MILLISECOND), builder.build());
     }
 }
