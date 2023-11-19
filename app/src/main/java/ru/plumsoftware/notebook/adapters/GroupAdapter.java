@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
@@ -67,7 +68,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
             @Override
             public boolean onLongClick(View view) {
                 Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
+                }
                 showPopupMenu(view, group);
                 return false;
             }
