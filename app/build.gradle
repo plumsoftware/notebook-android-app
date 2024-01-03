@@ -10,8 +10,8 @@ android {
         applicationId "ru.plumsoftware.notebook"
         minSdk 22
         targetSdk 34
-        versionCode 19
-        versionName "1.5.1"
+        versionCode 21
+        versionName "1.5.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,6 +27,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     namespace 'ru.plumsoftware.notebook'
+
+    android {
+        lintOptions {
+            disable 'MobileAdsSdkOutdatedVersion'
+        }
+    }
 }
 
 dependencies {

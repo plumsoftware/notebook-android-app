@@ -112,6 +112,11 @@ public class AddNoteActivity extends AppCompatActivity {
         Note note = getIntent().getParcelableExtra("note");
         boolean isUpdate = getIntent().getBooleanExtra("update", false);
 
+        Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+        if (!getIntent().getBooleanExtra("isLoadAppOpenAd", false)){
+            intent.putExtra("isLoadAppOpenAd", false);
+        }
+
         if (isUpdate) {
             toolbar.setTitle("Редактировать заметку");
             toolbar.setSubtitle(new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(note.getAddNoteTime())));
@@ -155,14 +160,14 @@ public class AddNoteActivity extends AppCompatActivity {
 
                         @Override
                         public void onAdDismissed() {
-                            startActivity(new Intent(AddNoteActivity.this, MainActivity.class));
+                            startActivity(intent);
                             overridePendingTransition(0, 0);
                             finish();
                         }
 
                         @Override
                         public void onAdClicked() {
-                            startActivity(new Intent(AddNoteActivity.this, MainActivity.class));
+                            startActivity(intent);
                             overridePendingTransition(0, 0);
                             finish();
                         }
@@ -179,7 +184,7 @@ public class AddNoteActivity extends AppCompatActivity {
             @Override
             public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
                 Toast.makeText(AddNoteActivity.this, adRequestError.getDescription(), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(AddNoteActivity.this, MainActivity.class));
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 finish();
             }
