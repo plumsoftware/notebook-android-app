@@ -103,7 +103,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
         });
 
         //Ads
-        if (position == 2 || position == 5 || position == 8 || position == 11 || position == 14) {
+//        if (position == 2 || position == 5 || position == 8 || position == 11 || position == 14) {
+        if (position == -1) {
 
             holder.adsCard.setVisibility(View.GONE);
 

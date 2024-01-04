@@ -10,8 +10,8 @@ android {
         applicationId "ru.plumsoftware.notebook"
         minSdk 22
         targetSdk 34
-        versionCode 21
-        versionName "1.5.2"
+        versionCode 22
+        versionName "1.5.2.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
