@@ -441,9 +441,9 @@ public class AddNoteActivity extends AppCompatActivity {
             intent.putExtra("LoadInterstitialAd", false);
         }
 //        super.onBackPressed();
-        progressDialog.showDialog();
         if (isLoadIntAds)
             if (mInterstitialAdLoader != null) {
+                progressDialog.showDialog();
                 final AdRequestConfiguration adRequestConfiguration =
                         new AdRequestConfiguration.Builder("R-M-1957919-2").build();
                 mInterstitialAdLoader.loadAd(adRequestConfiguration);
@@ -452,6 +452,11 @@ public class AddNoteActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
                 finish();
             }
+        else {
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+        }
     }
 
     private void setDateAndTime() {
