@@ -103,8 +103,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
         });
 
         //Ads
-//        if (position == 2 || position == 5 || position == 8 || position == 11 || position == 14) {
-        if (position == -1) {
+        if (position == 2 || position == 8 || position == 15 || position == 20) {
+//        if (position == -1) {
 
             holder.adsCard.setVisibility(View.GONE);
 
@@ -226,6 +226,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
                 Intent intent = new Intent(activity, AddNoteActivity.class);
                 intent.putExtra("update", true);
                 intent.putExtra("note", note);
+                intent.putExtra("LoadInterstitialAd", true);
+                intent.putExtra("isLoadAppOpenAd", false);
                 activity.startActivity(intent);
                 activity.overridePendingTransition(0, 0);
                 activity.finish();

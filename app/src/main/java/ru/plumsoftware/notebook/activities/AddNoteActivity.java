@@ -72,9 +72,11 @@ public class AddNoteActivity extends AppCompatActivity {
     private String notificationChannelId = "";
 
     private int
-            color = 0xFFFFFF,
+            color,
             opacityRes = R.drawable.ic_coffee;
     private long noteTime = 0L;
+
+    private boolean isLoadIntAds = true;
     private CardView cardViewBtnDone;
     private SQLiteDatabase sqLiteDatabaseNotes;
     @Nullable
@@ -95,6 +97,8 @@ public class AddNoteActivity extends AppCompatActivity {
 
         });
 
+        color = getResources().getColor(R.color.note_green);
+
         toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -113,8 +117,12 @@ public class AddNoteActivity extends AppCompatActivity {
         boolean isUpdate = getIntent().getBooleanExtra("update", false);
 
         Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
-        if (!getIntent().getBooleanExtra("isLoadAppOpenAd", false)){
+        if (!getIntent().getBooleanExtra("isLoadAppOpenAd", false)) {
             intent.putExtra("isLoadAppOpenAd", false);
+        }
+        isLoadIntAds = getIntent().getBooleanExtra("LoadInterstitialAd", true);
+        if (isLoadIntAds) {
+            intent.putExtra("LoadInterstitialAd", false);
         }
 
         if (isUpdate) {
@@ -139,57 +147,58 @@ public class AddNoteActivity extends AppCompatActivity {
             toolbar.setSubtitle(new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(noteTime)));
         }
 
-        mInterstitialAdLoader = new InterstitialAdLoader(this);
+        if (isLoadIntAds) {
+            mInterstitialAdLoader = new InterstitialAdLoader(this);
 
-        mInterstitialAdLoader.setAdLoadListener(new InterstitialAdLoadListener() {
-            @Override
-            public void onAdLoaded(@NonNull final InterstitialAd interstitialAd) {
-                mInterstitialAd = interstitialAd;
-                progressDialog.dismiss();
-                if (mInterstitialAd != null) {
-                    mInterstitialAd.setAdEventListener(new InterstitialAdEventListener() {
-                        @Override
-                        public void onAdShown() {
+            mInterstitialAdLoader.setAdLoadListener(new InterstitialAdLoadListener() {
+                @Override
+                public void onAdLoaded(@NonNull final InterstitialAd interstitialAd) {
+                    mInterstitialAd = interstitialAd;
+                    progressDialog.dismiss();
+                    if (mInterstitialAd != null) {
+                        mInterstitialAd.setAdEventListener(new InterstitialAdEventListener() {
+                            @Override
+                            public void onAdShown() {
 
-                        }
+                            }
 
-                        @Override
-                        public void onAdFailedToShow(@NonNull AdError adError) {
+                            @Override
+                            public void onAdFailedToShow(@NonNull AdError adError) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onAdDismissed() {
-                            startActivity(intent);
-                            overridePendingTransition(0, 0);
-                            finish();
-                        }
+                            @Override
+                            public void onAdDismissed() {
+                                startActivity(intent);
+                                overridePendingTransition(0, 0);
+                                finish();
+                            }
 
-                        @Override
-                        public void onAdClicked() {
-                            startActivity(intent);
-                            overridePendingTransition(0, 0);
-                            finish();
-                        }
+                            @Override
+                            public void onAdClicked() {
+                                startActivity(intent);
+                                overridePendingTransition(0, 0);
+                                finish();
+                            }
 
-                        @Override
-                        public void onAdImpression(@Nullable ImpressionData impressionData) {
+                            @Override
+                            public void onAdImpression(@Nullable ImpressionData impressionData) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
+                    mInterstitialAd.show(AddNoteActivity.this);
                 }
-                mInterstitialAd.show(AddNoteActivity.this);
-            }
 
-            @Override
-            public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                Toast.makeText(AddNoteActivity.this, adRequestError.getDescription(), Toast.LENGTH_SHORT).show();
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-                finish();
-            }
-        });
-
+                @Override
+                public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
+                    Toast.makeText(AddNoteActivity.this, adRequestError.getDescription(), Toast.LENGTH_SHORT).show();
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                    finish();
+                }
+            });
+        }
 //        interstitialAd.setAdUnitId("R-M-1957919-2");
 
         cardViewBtnDone.setOnClickListener(new View.OnClickListener() {
@@ -424,13 +433,25 @@ public class AddNoteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+        if (!getIntent().getBooleanExtra("isLoadAppOpenAd", false)) {
+            intent.putExtra("isLoadAppOpenAd", false);
+        }
+        if (isLoadIntAds) {
+            intent.putExtra("LoadInterstitialAd", false);
+        }
 //        super.onBackPressed();
         progressDialog.showDialog();
-        if (mInterstitialAdLoader != null) {
-            final AdRequestConfiguration adRequestConfiguration =
-                    new AdRequestConfiguration.Builder("R-M-1957919-2").build();
-            mInterstitialAdLoader.loadAd(adRequestConfiguration);
-        }
+        if (isLoadIntAds)
+            if (mInterstitialAdLoader != null) {
+                final AdRequestConfiguration adRequestConfiguration =
+                        new AdRequestConfiguration.Builder("R-M-1957919-2").build();
+                mInterstitialAdLoader.loadAd(adRequestConfiguration);
+            } else {
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+                finish();
+            }
     }
 
     private void setDateAndTime() {

@@ -197,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
                 intent.putExtra("isLoadAppOpenAd", false);
+                intent.putExtra("LoadInterstitialAd", getIntent().getBooleanExtra("LoadInterstitialAd", true));
                 startActivity(intent);
                 finish();
             }
