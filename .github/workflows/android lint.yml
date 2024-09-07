@@ -25,7 +25,7 @@ jobs:
         run: |
             echo "sdk.dir=$(pwd)/android-sdk" >> local.properties
             echo "${{ secrets.LOCAL_PROPERTIES }}" >> local.properties
-      - run: ./gradlew lint
+      - run: ./gradlew :app:lint
       - uses: yutailang0119/action-android-lint@v4
         with:
           report-path: build/reports/*.xml
