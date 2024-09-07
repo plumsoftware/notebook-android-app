@@ -24,7 +24,6 @@ jobs:
       - name: Create local.properties
         run: |
             echo "sdk.dir=$(pwd)/android-sdk" >> local.properties
-            echo "${{ secrets.LOCAL_PROPERTIES }}" >> local.properties
       - run: ./gradlew :app:lint
       - uses: yutailang0119/action-android-lint@v4
         with:
