@@ -21,6 +21,8 @@ jobs:
           distribution: zulu
           java-version: 21
           cache: gradle
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
       - name: Create local.properties
         run: |
             echo "sdk.dir=$(pwd)/android-sdk" >> local.properties
