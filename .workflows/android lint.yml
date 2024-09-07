@@ -27,3 +27,4 @@ jobs:
           report-path: build/reports/*.xml
           ignore-warnings: true
         continue-on-error: false
+#I love android!
