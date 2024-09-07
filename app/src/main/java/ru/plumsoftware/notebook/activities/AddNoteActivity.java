@@ -450,12 +450,12 @@ public class AddNoteActivity extends AppCompatActivity {
             } else {
                 startActivity(intent);
                 overridePendingTransition(0, 0);
-                finish();
+                super.onBackPressed();
             }
         else {
             startActivity(intent);
             overridePendingTransition(0, 0);
-            finish();
+            super.onBackPressed();
         }
     }
 
