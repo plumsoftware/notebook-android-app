@@ -56,4 +56,8 @@ dependencies {
 
     //Analytics
     implementation 'com.google.firebase:firebase-analytics:22.1.0'
+
+    //Modules
+    implementation project(':app-domain')
+    implementation project(':app-data')
 }

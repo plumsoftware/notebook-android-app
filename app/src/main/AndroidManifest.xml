@@ -5,12 +5,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -20,24 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Блокнот">
         <activity
-            android:name=".activities.AddNoteActivity"
+            android:name=".presentation.activities.AddNoteActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.NotepadActivity"
+            android:name=".presentation.activities.NotepadActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".activities.MainMenuActivity"
-            android:exported="true">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".activities.MainActivity"
+            android:name=".presentation.activities.MainActivity"
             android:exported="true"
             android:hardwareAccelerated="true">
             <intent-filter>
@@ -46,12 +40,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <meta-data android:name="android.app.shortcuts"
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
 
         <service
-            android:name=".services.MyRuStoreMessagingService"
+            android:name=".services.push.MyRuStoreMessagingService"
             android:exported="true"
             tools:ignore="ExportedService">
             <intent-filter>
@@ -60,7 +55,7 @@
         </service>
 
         <service
-            android:name=".services.MyFirebaseMessagingService"
+            android:name=".services.push.MyFirebaseMessagingService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -68,7 +63,7 @@
         </service>
 
         <receiver
-            android:name=".services.NotificationReceiver"
+            android:name=".services.receive.NotificationReceiver"
             android:enabled="true"
             android:exported="true" />
 
