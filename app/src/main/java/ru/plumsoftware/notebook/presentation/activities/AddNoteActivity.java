@@ -52,6 +52,7 @@ import ru.plumsoftware.data.model.database.DatabaseConstants;
 import ru.plumsoftware.data.model.ui.Colors;
 import ru.plumsoftware.data.model.ui.Note;
 import ru.plumsoftware.data.model.ui.Shape;
+import ru.plumsoftware.notebook.presentation.activities.main.view.MainActivity;
 import ru.plumsoftware.notebook.presentation.dialogs.ProgressDialog;
 import ru.plumsoftware.notebook.R;
 import ru.plumsoftware.notebook.presentation.adapters.ColorAdapter;

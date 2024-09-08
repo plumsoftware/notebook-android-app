@@ -8,4 +8,8 @@ public class ExtraNames {
         public static String notificationChannelId = "notificationChannelId";
         public static Pair<String, Integer> colorPair = new Pair<>("color", 0);
     }
+
+    public static class MainActivity {
+        public static String isLoadAppOpenAd = "isLoadAppOpenAd";
+    }
 }

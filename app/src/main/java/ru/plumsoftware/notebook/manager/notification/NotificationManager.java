@@ -13,7 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 import java.util.Calendar;
 
 import ru.plumsoftware.notebook.R;
-import ru.plumsoftware.notebook.presentation.activities.MainActivity;
+import ru.plumsoftware.notebook.presentation.activities.main.view.MainActivity;
 
 public class NotificationManager {
 

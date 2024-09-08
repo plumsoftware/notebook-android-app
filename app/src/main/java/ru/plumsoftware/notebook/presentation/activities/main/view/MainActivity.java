@@ -1,4 +1,4 @@
-package ru.plumsoftware.notebook.presentation.activities;
+package ru.plumsoftware.notebook.presentation.activities.main.view;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +16,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -42,20 +41,28 @@ import ru.plumsoftware.data.database.SQLiteDatabaseManager;
 import ru.plumsoftware.data.model.database.DatabaseConstants;
 import ru.plumsoftware.data.model.ui.Note;
 import ru.plumsoftware.notebook.R;
+import ru.plumsoftware.notebook.presentation.activities.AddNoteActivity;
+import ru.plumsoftware.notebook.presentation.activities.main.presenter.MainPresenterImpl;
 import ru.plumsoftware.notebook.presentation.adapters.NoteAdapter;
 import ru.plumsoftware.notebook.presentation.dialogs.ProgressDialog;
+import ru.plumsoftware.notebook.presentation.presenters.main.MainPresenter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainView {
+
+    private MainPresenter presenter;
+
+    private Context context;
+    private Activity activity;
+
+    private static RecyclerView recyclerViewNotes;
+    private ProgressDialog progressDialog;
+
     public static SQLiteDatabase sqLiteDatabaseNotes;
-    private static RecyclerView recyclerViewNotes; //recyclerViewGroups;
     private static boolean isList = true;
     private int
             color,
             opacityRes = R.drawable.ic_coffee;
-    private Context context;
-    private Activity activity;
 
-    private ProgressDialog progressDialog;
     private AppOpenAd mAppOpenAd = null;
 
     @Override
@@ -63,96 +70,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notepad);
 
-        MobileAds.initialize(this, () -> {
-
-        });
-
-//        FVI
-        SearchView searchView = (SearchView) findViewById(R.id.searchView);
-        recyclerViewNotes = (RecyclerView) findViewById(R.id.recyclerViewNotes);
-        //recyclerViewGroups = (RecyclerView) findViewById(R.id.recyclerViewGroups);
-        ImageView filterAsList = (ImageView) findViewById(R.id.filterAsList);
-        ImageButton addNote = (ImageButton) findViewById(R.id.addNote);
-
-//        Data
+//        Base variables
         context = MainActivity.this;
         activity = MainActivity.this;
-        Handler handler = new Handler();
-        progressDialog = new ProgressDialog(MainActivity.this, R.style.CustomProgressDialog);
-        try (SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context)) {
-            sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
-        }
-        List<Note> notes = new ArrayList<>();
 
-        notes = loadNotes(context);
+        presenter = new MainPresenterImpl(this, context, activity);
+
+//        Find views by id
+        SearchView searchView = findViewById(R.id.searchView);
+        recyclerViewNotes = findViewById(R.id.recyclerViewNotes);
+        ImageView filterAsList = findViewById(R.id.filterAsList);
+        ImageButton addNote = findViewById(R.id.addNote);
+        progressDialog = new ProgressDialog(context, R.style.CustomProgressDialog);
+
+
+        presenter.initMobileSdk();
+        presenter.initNotes();
 
 //        load ad
         if (getIntent().getBooleanExtra("isLoadAppOpenAd", true)) {
-            final AppOpenAdLoader appOpenAdLoader = new AppOpenAdLoader(this);
-            final String AD_UNIT_ID = "R-M-1957919-3";
-            final AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(AD_UNIT_ID).build();
-
-            progressDialog.showDialog();
-
-            AppOpenAdEventListener appOpenAdEventListener = new AppOpenAdEventListener() {
-                @Override
-                public void onAdShown() {
-                    // Called when ad is shown.
-                }
-
-                @Override
-                public void onAdFailedToShow(@NonNull final AdError adError) {
-                    // Called when ad failed to show.
-                    progressDialog.dismiss();
-                }
-
-                @Override
-                public void onAdDismissed() {
-                    // Called when ad is dismissed.
-                    // Clean resources after dismiss and preload new ad.
-                    clearAppOpenAd();
-//                showAppOpenAd();
-                }
-
-                @Override
-                public void onAdClicked() {
-                    // Called when a click is recorded for an ad.
-                }
-
-                @Override
-                public void onAdImpression(@Nullable final ImpressionData impressionData) {
-                    // Called when an impression is recorded for an ad.
-                }
-            };
-
-            AppOpenAdLoadListener appOpenAdLoadListener = new AppOpenAdLoadListener() {
-                @Override
-                public void onAdLoaded(@NonNull final AppOpenAd appOpenAd) {
-                    // The ad was loaded successfully. Now you can show loaded ad.
-                    mAppOpenAd = appOpenAd;
-                    mAppOpenAd.setAdEventListener(appOpenAdEventListener);
-                    showAppOpenAd();
-                    progressDialog.dismiss();
-                }
-
-                @Override
-                public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                    progressDialog.dismiss();
-                }
-            };
-
-            appOpenAdLoader.setAdLoadListener(appOpenAdLoadListener);
-
-            appOpenAdLoader.loadAd(adRequestConfiguration);
+            presenter.initOpenAds();
         }
-
-
-        NoteAdapter noteAdapter = new NoteAdapter(context, activity, notes, 1);
-        //GroupAdapter groupAdapter = new GroupAdapter(context, activity, groups, 1);
-
-        recyclerViewNotes.setHasFixedSize(true);
-        recyclerViewNotes.setLayoutManager(new LinearLayoutManager(context));
-        recyclerViewNotes.setAdapter(noteAdapter);
 
         filterAsList.setImageResource(R.drawable.ic_baseline_filter_list);
 
@@ -432,22 +370,9 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    public static void reloadRecyclerView(Context context, Activity activity) {
-        recyclerViewNotes.setVisibility(View.GONE);
-        List<Note> notes = loadNotes(context);
-        //Collections.reverse(notes);
-        NoteAdapter noteAdapter = new NoteAdapter(context, activity, notes, 1);
-        recyclerViewNotes.setHasFixedSize(true);
-        recyclerViewNotes.setLayoutManager(new LinearLayoutManager(context));
-        recyclerViewNotes.setAdapter(noteAdapter);
-        recyclerViewNotes.setVisibility(View.VISIBLE);
-        isList = true;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        sqLiteDatabaseNotes.close();
     }
 
     private void clearAppOpenAd() {
@@ -457,10 +382,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void showNotes(List<Note> noteList) {
+        NoteAdapter noteAdapter = new NoteAdapter(context, activity, noteList, 1);
 
-    private void showAppOpenAd() {
-        if (mAppOpenAd != null) {
-            mAppOpenAd.show(activity);
-        }
+        recyclerViewNotes.setHasFixedSize(true);
+        recyclerViewNotes.setLayoutManager(new LinearLayoutManager(context));
+        recyclerViewNotes.setAdapter(noteAdapter);
+    }
+
+    @Override
+    public void showLoading() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        progressDialog.dismiss();
     }
 }
