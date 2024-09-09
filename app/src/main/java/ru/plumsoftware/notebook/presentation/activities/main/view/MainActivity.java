@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notepad);
+        setContentView(R.layout.activity_main);
 
 //        Base variables
         context = MainActivity.this;

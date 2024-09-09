@@ -35,7 +35,7 @@ import ru.plumsoftware.data.model.ui.Note;
 import ru.plumsoftware.notebook.R;
 import ru.plumsoftware.notebook.manager.ads.AdsIds;
 import ru.plumsoftware.notebook.manager.extra.ExtraNames;
-import ru.plumsoftware.notebook.presentation.activities.AddNoteActivity;
+import ru.plumsoftware.notebook.presentation.activities.note.view.AddNoteActivity;
 import ru.plumsoftware.notebook.presentation.activities.main.view.MainView;
 import ru.plumsoftware.notebook.presentation.dialogs.ProgressDialog;
 
@@ -81,7 +81,6 @@ public class MainPresenterImpl implements MainPresenter {
         intent.putExtra(ExtraNames.MainActivity.isLoadAppOpenAd, false);
         intent.putExtra(ExtraNames.MainActivity.LoadInterstitialAd, activity.getIntent().getBooleanExtra(ExtraNames.MainActivity.LoadInterstitialAd, true));
         activity.startActivity(intent);
-        activity.finish();
     }
 
     @Override

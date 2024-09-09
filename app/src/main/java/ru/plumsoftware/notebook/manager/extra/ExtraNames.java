@@ -13,4 +13,9 @@ public class ExtraNames {
         public static String isLoadAppOpenAd = "isLoadAppOpenAd";
         public static String LoadInterstitialAd = "LoadInterstitialAd";
     }
+
+    public static class AddNoteActivity {
+        public static String note = "note";
+        public static String update = "update";
+    }
 }

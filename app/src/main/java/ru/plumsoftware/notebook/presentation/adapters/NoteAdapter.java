@@ -47,7 +47,7 @@ import java.util.Locale;
 import ru.plumsoftware.data.database.SQLiteDatabaseManager;
 import ru.plumsoftware.data.model.database.DatabaseConstants;
 import ru.plumsoftware.data.model.ui.Note;
-import ru.plumsoftware.notebook.presentation.activities.AddNoteActivity;
+import ru.plumsoftware.notebook.presentation.activities.note.view.AddNoteActivity;
 import ru.plumsoftware.notebook.presentation.activities.main.view.MainActivity;
 import ru.plumsoftware.notebook.presentation.dialogs.ProgressDialog;
 import ru.plumsoftware.notebook.R;

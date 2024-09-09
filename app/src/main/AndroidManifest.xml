@@ -21,15 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Блокнот">
         <activity
-            android:name=".presentation.activities.AddNoteActivity"
+            android:name=".presentation.activities.note.view.AddNoteActivity"
             android:exported="false" />
-        <activity
-            android:name=".presentation.activities.NotepadActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
         <activity
             android:name=".presentation.activities.main.view.MainActivity"
             android:exported="true"
