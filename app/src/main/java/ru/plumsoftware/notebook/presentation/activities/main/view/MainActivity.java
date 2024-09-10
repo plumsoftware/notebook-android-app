@@ -51,9 +51,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
         ImageButton addNote = findViewById(R.id.addNote);
         progressDialog = new ProgressDialog(context, R.style.CustomProgressDialog);
 
-        presenter.initMobileSdk();
-        presenter.initNotes(new Conditions.All());
-
 //        load ad
         presenter.initOpenAds();
 
@@ -106,5 +103,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     public void dismissProgressDialog() {
         progressDialog.dismiss();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        presenter.initNotes(new Conditions.All());
+        presenter.initMobileSdk();
     }
 }

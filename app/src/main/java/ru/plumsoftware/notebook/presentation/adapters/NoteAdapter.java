@@ -230,7 +230,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
                 intent.putExtra("isLoadAppOpenAd", false);
                 activity.startActivity(intent);
                 activity.overridePendingTransition(0, 0);
-                activity.finish();
 
 //                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetTheme);
 //                bottomSheetDialog.setContentView(R.layout.add_note_layout);

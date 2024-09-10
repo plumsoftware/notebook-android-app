@@ -58,6 +58,7 @@ public class MainPresenterImpl implements MainPresenter {
         this.activity = activity;
         this.mainView = mainView;
         filteredNotes = new ArrayList<>();
+        notes = new ArrayList<>();
     }
 
     @Override
@@ -89,6 +90,7 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void initNotes(Conditions conditions) {
+        mainView.showProgressDialog();
         if (conditions instanceof Conditions.Search) {
             filteredNotes.clear();
             String query = ((Conditions.Search) conditions).getQuery();
@@ -110,12 +112,10 @@ public class MainPresenterImpl implements MainPresenter {
 
             mainView.initRecyclerView(filteredNotes, layoutManager);
         } else if (conditions instanceof Conditions.All) {
-            mainView.showProgressDialog();
-            if (notes == null) {
-                SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context);
-                sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
-                notes = loadNotes();
-            }
+            notes.clear();
+            SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context);
+            sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
+            notes = loadNotes();
 
             isList = true;
             mainView.changeFilterButtonImage(R.drawable.ic_baseline_filter_list);
@@ -161,8 +161,8 @@ public class MainPresenterImpl implements MainPresenter {
             public void onAdLoaded(@NonNull final AppOpenAd appOpenAd) {
                 mainAppOpenAd = appOpenAd;
                 appOpenAd.setAdEventListener(appOpenAdEventListener);
-                mainAppOpenAd.show(activity);
                 mainView.dismissProgressDialog();
+                mainAppOpenAd.show(activity);
             }
 
             @Override
@@ -173,6 +173,7 @@ public class MainPresenterImpl implements MainPresenter {
 
         appOpenAdLoader.setAdLoadListener(appOpenAdLoadListener);
         appOpenAdLoader.loadAd(adRequestConfiguration);
+        mainView.dismissProgressDialog();
     }
 
     @NonNull

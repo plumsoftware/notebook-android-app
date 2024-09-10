@@ -28,18 +28,9 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
-import com.yandex.mobile.ads.common.AdError;
-import com.yandex.mobile.ads.common.AdRequestConfiguration;
-import com.yandex.mobile.ads.common.AdRequestError;
-import com.yandex.mobile.ads.common.ImpressionData;
-import com.yandex.mobile.ads.interstitial.InterstitialAd;
-import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener;
-import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener;
-import com.yandex.mobile.ads.interstitial.InterstitialAdLoader;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,7 +42,6 @@ import java.util.Objects;
 import ru.plumsoftware.data.model.ui.Colors;
 import ru.plumsoftware.data.model.ui.Note;
 import ru.plumsoftware.data.model.ui.Shape;
-import ru.plumsoftware.notebook.manager.ads.AdsIds;
 import ru.plumsoftware.notebook.presentation.activities.note.presenter.AddNotePresenter;
 import ru.plumsoftware.notebook.presentation.activities.note.presenter.AddNotePresenterImpl;
 import ru.plumsoftware.notebook.presentation.dialogs.ProgressDialog;
@@ -70,11 +60,9 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteView {
             color,
             opacityRes = R.drawable.ic_coffee;
 
-    private ProgressDialog progressDialog;
-
     private Calendar dateAndTime = Calendar.getInstance();
 
-    private long noteTime = 0L;
+    private long noteTime = System.currentTimeMillis();
 
     private Toolbar toolbar;
     private CardView cardViewBtnDone;
@@ -82,6 +70,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteView {
     private TextView textViewOnButton;
     private EditText tvTitle;
     private EditText tvText;
+    private ProgressDialog progressDialog;
 
     private AddNotePresenter presenter;
 

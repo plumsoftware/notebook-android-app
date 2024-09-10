@@ -54,6 +54,11 @@ public class AddNotePresenterImpl implements AddNotePresenter {
         SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(addNoteModel.getContext());
         sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
 
+        addNoteModel.setNote(addNoteModel.getActivity().getIntent().getParcelableExtra(ExtraNames.AddNoteActivity.note));
+        if (addNoteModel.getNote() != null) {
+            view.initNote(addNoteModel.getNote());
+        }
+
         String title;
         String textOnButton;
         String time;
@@ -70,11 +75,6 @@ public class AddNotePresenterImpl implements AddNotePresenter {
             time = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(new Date(System.currentTimeMillis()));
         }
         view.initToolbarTitle(title, textOnButton, time);
-
-        addNoteModel.setNote(addNoteModel.getActivity().getIntent().getParcelableExtra(ExtraNames.AddNoteActivity.note));
-        if (addNoteModel.getNote() != null) {
-            view.initNote(addNoteModel.getNote());
-        }
     }
 
     @Override
