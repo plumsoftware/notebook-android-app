@@ -48,7 +48,6 @@ public class MainPresenterImpl implements MainPresenter {
     private SQLiteDatabase sqLiteDatabaseNotes;
 
     private AppOpenAd mainAppOpenAd = null;
-    private final ProgressDialog progressDialog;
 
     private boolean isList = true;
     private List<Note> notes;
@@ -59,8 +58,6 @@ public class MainPresenterImpl implements MainPresenter {
         this.activity = activity;
         this.mainView = mainView;
         filteredNotes = new ArrayList<>();
-
-        progressDialog = new ProgressDialog(context, R.style.CustomProgressDialog);
     }
 
     @Override
@@ -113,7 +110,7 @@ public class MainPresenterImpl implements MainPresenter {
 
             mainView.initRecyclerView(filteredNotes, layoutManager);
         } else if (conditions instanceof Conditions.All) {
-            progressDialog.showDialog();
+            mainView.showProgressDialog();
             if (notes == null) {
                 SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context);
                 sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
@@ -124,61 +121,58 @@ public class MainPresenterImpl implements MainPresenter {
             mainView.changeFilterButtonImage(R.drawable.ic_baseline_filter_list);
             mainView.initRecyclerView(notes, new LinearLayoutManager(context));
         }
-        progressDialog.dismiss();
+        mainView.dismissProgressDialog();
     }
 
     @Override
     public void initOpenAds() {
-        if (activity.getIntent().getBooleanExtra(ExtraNames.MainActivity.isLoadAppOpenAd, true)) {
-            progressDialog.showDialog();
-            final AppOpenAdLoader appOpenAdLoader = new AppOpenAdLoader(context);
-            final AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(AdsIds.OPEN_AD_UNIT_ID).build();
+        mainView.showProgressDialog();
+        final AppOpenAdLoader appOpenAdLoader = new AppOpenAdLoader(context);
+        final AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(AdsIds.OPEN_AD_UNIT_ID).build();
 
-            AppOpenAdEventListener appOpenAdEventListener = new AppOpenAdEventListener() {
-                @Override
-                public void onAdShown() {
-                    progressDialog.dismiss();
-                }
+        AppOpenAdEventListener appOpenAdEventListener = new AppOpenAdEventListener() {
+            @Override
+            public void onAdShown() {
+                mainView.dismissProgressDialog();
+            }
 
-                @Override
-                public void onAdFailedToShow(@NonNull final AdError adError) {
-                    progressDialog.dismiss();
-                }
+            @Override
+            public void onAdFailedToShow(@NonNull final AdError adError) {
+                mainView.dismissProgressDialog();
+            }
 
-                @Override
-                public void onAdDismissed() {
-                    clearAppOpenAd();
-                }
+            @Override
+            public void onAdDismissed() {
+                clearAppOpenAd();
+            }
 
-                @Override
-                public void onAdClicked() {
-                    // Called when a click is recorded for an ad.
-                }
+            @Override
+            public void onAdClicked() {
+                // Called when a click is recorded for an ad.
+            }
 
-                @Override
-                public void onAdImpression(@Nullable final ImpressionData impressionData) {
-                    // Called when an impression is recorded for an ad.
-                }
-            };
-            AppOpenAdLoadListener appOpenAdLoadListener = new AppOpenAdLoadListener() {
-                @Override
-                public void onAdLoaded(@NonNull final AppOpenAd appOpenAd) {
-                    mainAppOpenAd = appOpenAd;
-                    appOpenAd.setAdEventListener(appOpenAdEventListener);
-                    mainAppOpenAd.show(activity);
-                    progressDialog.dismiss();
-                }
+            @Override
+            public void onAdImpression(@Nullable final ImpressionData impressionData) {
+                // Called when an impression is recorded for an ad.
+            }
+        };
+        AppOpenAdLoadListener appOpenAdLoadListener = new AppOpenAdLoadListener() {
+            @Override
+            public void onAdLoaded(@NonNull final AppOpenAd appOpenAd) {
+                mainAppOpenAd = appOpenAd;
+                appOpenAd.setAdEventListener(appOpenAdEventListener);
+                mainAppOpenAd.show(activity);
+                mainView.dismissProgressDialog();
+            }
 
-                @Override
-                public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                    progressDialog.dismiss();
-                }
-            };
+            @Override
+            public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
+                mainView.dismissProgressDialog();
+            }
+        };
 
-            appOpenAdLoader.setAdLoadListener(appOpenAdLoadListener);
-            appOpenAdLoader.loadAd(adRequestConfiguration);
-            progressDialog.dismiss();
-        }
+        appOpenAdLoader.setAdLoadListener(appOpenAdLoadListener);
+        appOpenAdLoader.loadAd(adRequestConfiguration);
     }
 
     @NonNull

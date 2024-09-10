@@ -4,8 +4,20 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.yandex.mobile.ads.common.AdError;
+import com.yandex.mobile.ads.common.AdRequestConfiguration;
+import com.yandex.mobile.ads.common.AdRequestError;
+import com.yandex.mobile.ads.common.ImpressionData;
 import com.yandex.mobile.ads.common.MobileAds;
+import com.yandex.mobile.ads.interstitial.InterstitialAd;
+import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener;
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener;
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoader;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,7 +26,7 @@ import java.util.Locale;
 import ru.plumsoftware.data.database.SQLiteDatabaseManager;
 import ru.plumsoftware.data.model.database.DatabaseConstants;
 import ru.plumsoftware.data.model.ui.Note;
-import ru.plumsoftware.notebook.R;
+import ru.plumsoftware.notebook.manager.ads.AdsIds;
 import ru.plumsoftware.notebook.manager.extra.ExtraNames;
 import ru.plumsoftware.notebook.manager.unique.UniqueIdGenerator;
 import ru.plumsoftware.notebook.presentation.activities.note.model.AddNoteModel;
@@ -78,6 +90,64 @@ public class AddNotePresenterImpl implements AddNotePresenter {
         } else if (addNoteModel.getMode() == Mode.Edit) {
             updateNote(name, text, or, c, time, isNotify);
         }
+    }
+
+    @Override
+    public void initInterstitialAds() {
+        InterstitialAdLoader mInterstitialAdLoader = new InterstitialAdLoader(addNoteModel.getContext());
+        mInterstitialAdLoader.setAdLoadListener(new InterstitialAdLoadListener() {
+            @Override
+            public void onAdLoaded(@NonNull final InterstitialAd interstitialAd) {
+                view.dismissProgressDialog();
+                interstitialAd.setAdEventListener(new InterstitialAdEventListener() {
+                    @Override
+                    public void onAdShown() {
+
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@NonNull AdError adError) {
+
+                    }
+
+                    @Override
+                    public void onAdDismissed() {
+                        addNoteModel.getActivity().finish();
+                        addNoteModel.getActivity().overridePendingTransition(0, 0);
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        addNoteModel.getActivity().finish();
+                        addNoteModel.getActivity().overridePendingTransition(0, 0);
+                    }
+
+                    @Override
+                    public void onAdImpression(@Nullable ImpressionData impressionData) {
+
+                    }
+                });
+                addNoteModel.setmInterstitialAd(interstitialAd);
+                interstitialAd.show(addNoteModel.getActivity());
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
+                Toast.makeText(addNoteModel.getContext(), adRequestError.getDescription(), Toast.LENGTH_SHORT).show();
+                addNoteModel.getActivity().finish();
+                addNoteModel.getActivity().overridePendingTransition(0, 0);
+            }
+        });
+
+        addNoteModel.setmInterstitialAdLoader(mInterstitialAdLoader);
+    }
+
+    @Override
+    public void showInterstitialAd() {
+        view.showProgressDialog();
+        final AdRequestConfiguration adRequestConfiguration =
+                new AdRequestConfiguration.Builder(AdsIds.INTERSTITIAL_AD_UNIT_ID).build();
+        addNoteModel.getmInterstitialAdLoader().loadAd(adRequestConfiguration);
     }
 
     private void updateNote(String name, String text, int or, int c, long time, boolean isNotify) {

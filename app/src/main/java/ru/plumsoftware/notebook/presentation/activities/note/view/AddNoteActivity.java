@@ -15,7 +15,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,6 +51,7 @@ import java.util.Objects;
 import ru.plumsoftware.data.model.ui.Colors;
 import ru.plumsoftware.data.model.ui.Note;
 import ru.plumsoftware.data.model.ui.Shape;
+import ru.plumsoftware.notebook.manager.ads.AdsIds;
 import ru.plumsoftware.notebook.presentation.activities.note.presenter.AddNotePresenter;
 import ru.plumsoftware.notebook.presentation.activities.note.presenter.AddNotePresenterImpl;
 import ru.plumsoftware.notebook.presentation.dialogs.ProgressDialog;
@@ -70,12 +70,6 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteView {
             color,
             opacityRes = R.drawable.ic_coffee;
 
-    private boolean isLoadIntAds = true;
-    private SQLiteDatabase sqLiteDatabaseNotes;
-    @Nullable
-    private InterstitialAd mInterstitialAd = null;
-    @Nullable
-    private InterstitialAdLoader mInterstitialAdLoader = null;
     private ProgressDialog progressDialog;
 
     private Calendar dateAndTime = Calendar.getInstance();
@@ -113,53 +107,8 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteView {
 
         presenter.initMobileSdk();
         presenter.initNote();
+        presenter.initInterstitialAds();
 
-        mInterstitialAdLoader = new InterstitialAdLoader(this);
-        mInterstitialAdLoader.setAdLoadListener(new InterstitialAdLoadListener() {
-            @Override
-            public void onAdLoaded(@NonNull final InterstitialAd interstitialAd) {
-                mInterstitialAd = interstitialAd;
-                progressDialog.dismiss();
-                if (mInterstitialAd != null) {
-                    mInterstitialAd.setAdEventListener(new InterstitialAdEventListener() {
-                        @Override
-                        public void onAdShown() {
-
-                        }
-
-                        @Override
-                        public void onAdFailedToShow(@NonNull AdError adError) {
-
-                        }
-
-                        @Override
-                        public void onAdDismissed() {
-                            finish();
-                            overridePendingTransition(0, 0);
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-                            finish();
-                            overridePendingTransition(0, 0);
-                        }
-
-                        @Override
-                        public void onAdImpression(@Nullable ImpressionData impressionData) {
-
-                        }
-                    });
-                    mInterstitialAd.show(AddNoteActivity.this);
-                }
-            }
-
-            @Override
-            public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                Toast.makeText(AddNoteActivity.this, adRequestError.getDescription(), Toast.LENGTH_SHORT).show();
-                finish();
-                overridePendingTransition(0, 0);
-            }
-        });
         cardViewBtnDone.setOnClickListener(view -> {
             String noteTitle = Objects.requireNonNull(tvTitle).getText().toString();
             String text = Objects.requireNonNull(tvText).getText().toString();
@@ -289,12 +238,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteView {
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
-        if (mInterstitialAdLoader != null) {
-            progressDialog.showDialog();
-            final AdRequestConfiguration adRequestConfiguration =
-                    new AdRequestConfiguration.Builder("R-M-1957919-2").build();
-            mInterstitialAdLoader.loadAd(adRequestConfiguration);
-        }
+        presenter.showInterstitialAd();
     }
 
     private void setDateAndTime() {
@@ -362,5 +306,15 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteView {
                 .setTextColor(Color.parseColor("#000000"))
                 .setBackgroundTint(Color.WHITE)
                 .show();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
     }
 }

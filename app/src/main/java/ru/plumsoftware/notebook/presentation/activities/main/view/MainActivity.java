@@ -19,6 +19,7 @@ import ru.plumsoftware.notebook.presentation.activities.main.presenter.Condition
 import ru.plumsoftware.notebook.presentation.activities.main.presenter.MainPresenterImpl;
 import ru.plumsoftware.notebook.presentation.adapters.NoteAdapter;
 import ru.plumsoftware.notebook.presentation.activities.main.presenter.MainPresenter;
+import ru.plumsoftware.notebook.presentation.dialogs.ProgressDialog;
 
 public class MainActivity extends AppCompatActivity implements MainView {
 
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     private ImageView filterAsList;
     private RecyclerView recyclerViewNotes;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         filterAsList = findViewById(R.id.filterAsList);
         recyclerViewNotes = activity.findViewById(R.id.recyclerViewNotes);
         ImageButton addNote = findViewById(R.id.addNote);
+        progressDialog = new ProgressDialog(context, R.style.CustomProgressDialog);
 
         presenter.initMobileSdk();
         presenter.initNotes(new Conditions.All());
@@ -92,5 +96,15 @@ public class MainActivity extends AppCompatActivity implements MainView {
         recyclerViewNotes.setLayoutManager(layoutManager);
         recyclerViewNotes.setAdapter(noteAdapter);
         recyclerViewNotes.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
     }
 }
