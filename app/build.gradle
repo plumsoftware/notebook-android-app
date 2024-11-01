@@ -10,8 +10,8 @@ android {
         applicationId "ru.plumsoftware.notebook"
         minSdk 22
         targetSdk 34
-        versionCode 29
-        versionName "2.0.6"
+        versionCode 30
+        versionName "2.0.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,22 +40,22 @@ dependencies {
     //Autogenerate
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
     //Yandex ads
-    implementation 'com.yandex.android:mobileads:7.4.0'
+    implementation 'com.yandex.android:mobileads:7.6.0'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.15.1'
 
     //Messaging
-    implementation 'com.google.firebase:firebase-messaging:24.0.1'
+    implementation 'com.google.firebase:firebase-messaging:24.0.3'
 
     //Analytics
-    implementation 'com.google.firebase:firebase-analytics:22.1.0'
+    implementation 'com.google.firebase:firebase-analytics:22.1.2'
 
     //Modules
     implementation project(':app-domain')
