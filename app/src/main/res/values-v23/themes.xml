@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Блокнот" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary_color_5</item>
+        <item name="colorPrimaryVariant">@color/primary_color_5</item>
+        <item name="colorOnPrimary">@color/primary_color_5</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/primary_color_3</item>
+        <item name="colorSecondaryVariant">@color/primary_color_2</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <!-- Navigation bar color. -->
+        <item name="android:navigationBarColor">@color/black</item>
+        <!-- Window. -->
+        <item name="android:windowBackground">?android:attr/statusBarColor</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+</resources>
