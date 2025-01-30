@@ -47,6 +47,7 @@ import java.util.Locale;
 import ru.plumsoftware.data.database.SQLiteDatabaseManager;
 import ru.plumsoftware.data.model.database.DatabaseConstants;
 import ru.plumsoftware.data.model.ui.Note;
+import ru.plumsoftware.notebook.manager.ads.AdsIds;
 import ru.plumsoftware.notebook.presentation.activities.note.view.AddNoteActivity;
 import ru.plumsoftware.notebook.presentation.activities.main.view.MainActivity;
 import ru.plumsoftware.notebook.presentation.dialogs.ProgressDialog;
@@ -110,7 +111,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
             //Load ad
             final NativeBulkAdLoader nativeBulkAdLoader = new NativeBulkAdLoader(context);
-            final NativeAdRequestConfiguration nativeAdRequestConfiguration = new NativeAdRequestConfiguration.Builder("R-M-1957919-1").build();
+            final NativeAdRequestConfiguration nativeAdRequestConfiguration = new NativeAdRequestConfiguration.Builder(AdsIds.NATIVE_AD_UNIT_ID).build();
             //final NativeAdRequestConfiguration nativeAdRequestConfiguration = new NativeAdRequestConfiguration.Builder("R-M-1769412-1").build();
             //final NativeAdRequestConfiguration nativeAdRequestConfiguration = new NativeAdRequestConfiguration.Builder("R-M-1742395-1").build();
             nativeBulkAdLoader.loadAds(nativeAdRequestConfiguration, 1);
