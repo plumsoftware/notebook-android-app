@@ -4,16 +4,31 @@ plugins {
 }
 
 android {
-    compileSdk 34
+    compileSdk 35
+
+    def localProperties = new Properties()
+    def localPropertiesFile = rootProject.file("local.properties")
+
+    if (localPropertiesFile.exists()) {
+        localProperties.load(new FileInputStream(localPropertiesFile))
+    }
+
+    def noteScreenInterstitialAdsId = localProperties.getProperty("noteScreenInterstitialAdsId")
+    def openAdsId = localProperties.getProperty("openAdsId")
+    def nativeAdsId = localProperties.getProperty("nativeAdsId")
 
     defaultConfig {
         applicationId "ru.plumsoftware.notebook"
         minSdk 22
-        targetSdk 34
-        versionCode 30
-        versionName "2.0.7"
+        targetSdk 35
+        versionCode 31
+        versionName "2.0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "noteScreenInterstitialAdsId", "\"${noteScreenInterstitialAdsId}\""
+        buildConfigField "String", "openAdsId", "\"${openAdsId}\""
+        buildConfigField "String", "nativeAdsId", "\"${nativeAdsId}\""
     }
 
     buildTypes {
@@ -46,16 +61,16 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
     //Yandex ads
-    implementation 'com.yandex.android:mobileads:7.6.0'
+    implementation 'com.yandex.android:mobileads:7.9.0'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.15.1'
 
     //Messaging
-    implementation 'com.google.firebase:firebase-messaging:24.0.3'
+    implementation 'com.google.firebase:firebase-messaging:24.1.0'
 
     //Analytics
-    implementation 'com.google.firebase:firebase-analytics:22.1.2'
+    implementation 'com.google.firebase:firebase-analytics:22.2.0'
 
     //Modules
     implementation project(':app-domain')
