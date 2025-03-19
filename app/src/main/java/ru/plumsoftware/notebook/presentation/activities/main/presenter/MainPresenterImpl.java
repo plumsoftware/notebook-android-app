@@ -53,12 +53,15 @@ public class MainPresenterImpl implements MainPresenter {
     private List<Note> notes;
     private final List<Note> filteredNotes;
 
+    private ProgressDialog progressDialog;
+
     public MainPresenterImpl(Context context, @NonNull Activity activity, MainView mainView) {
         this.context = context;
         this.activity = activity;
         this.mainView = mainView;
         filteredNotes = new ArrayList<>();
         notes = new ArrayList<>();
+        progressDialog = new ProgressDialog(activity, R.style.CustomProgressDialog);
     }
 
     @Override
@@ -87,93 +90,116 @@ public class MainPresenterImpl implements MainPresenter {
         });
     }
 
+    private void showProgressDialog() {
+        progressDialog.showDialog();
+    }
+
+    private void dismissProgressDialog() {
+        progressDialog.dismiss();
+    }
+
 
     @Override
     public void initNotes(Conditions conditions) {
-        mainView.showProgressDialog();
-        if (conditions instanceof Conditions.Search) {
-            filteredNotes.clear();
-            String query = ((Conditions.Search) conditions).getQuery();
+        new Thread(() -> {
+            if (conditions instanceof Conditions.Search) {
+                filteredNotes.clear();
+                String query = ((Conditions.Search) conditions).getQuery();
 
-            for (Note note : notes) {
-                if (note.getNoteName().contains(query) ||
-                        note.getNoteText().contains(query) ||
-                        new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(note.getAddNoteTime())).contains(query)
-                ) {
-                    filteredNotes.add(note);
+                for (Note note : notes) {
+                    if (note.getNoteName().contains(query) ||
+                            note.getNoteText().contains(query) ||
+                            new SimpleDateFormat("dd.MM.yyyy HH.mm", Locale.getDefault()).format(new Date(note.getAddNoteTime())).contains(query)
+                    ) {
+                        filteredNotes.add(note);
+                    }
                 }
-            }
-            RecyclerView.LayoutManager layoutManager;
-            if (isList) {
-                layoutManager = new LinearLayoutManager(context);
-            } else {
-                layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-            }
+                RecyclerView.LayoutManager layoutManager;
+                if (isList) {
+                    layoutManager = new LinearLayoutManager(context);
+                } else {
+                    layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                }
 
-            mainView.initRecyclerView(filteredNotes, layoutManager);
-        } else if (conditions instanceof Conditions.All) {
-            notes.clear();
-            SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context);
-            sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
-            notes = loadNotes();
+                mainView.initRecyclerView(filteredNotes, layoutManager);
+            }
+            else if (conditions instanceof Conditions.All) {
+                notes.clear();
+                SQLiteDatabaseManager sqLiteDatabaseManager = new SQLiteDatabaseManager(context);
+                sqLiteDatabaseNotes = sqLiteDatabaseManager.getWritableDatabase();
+                notes = loadNotes();
 
-            isList = true;
-            mainView.changeFilterButtonImage(R.drawable.ic_baseline_filter_list);
-            mainView.initRecyclerView(notes, new LinearLayoutManager(context));
-        }
-        mainView.dismissProgressDialog();
+                isList = true;
+
+                activity.runOnUiThread(() -> {
+                    mainView.changeFilterButtonImage(R.drawable.ic_baseline_filter_list);
+                    mainView.initRecyclerView(notes, new LinearLayoutManager(context));
+                });
+            }
+        }).start();
     }
 
     @Override
     public void initOpenAds() {
-        mainView.showProgressDialog();
+        activity.runOnUiThread(this::showProgressDialog);
         final AppOpenAdLoader appOpenAdLoader = new AppOpenAdLoader(context);
         final AdRequestConfiguration adRequestConfiguration = new AdRequestConfiguration.Builder(AdsIds.OPEN_AD_UNIT_ID).build();
 
         AppOpenAdEventListener appOpenAdEventListener = new AppOpenAdEventListener() {
             @Override
             public void onAdShown() {
-                mainView.dismissProgressDialog();
+                activity.runOnUiThread(() -> dismissProgressDialog());
             }
 
             @Override
             public void onAdFailedToShow(@NonNull final AdError adError) {
-                mainView.dismissProgressDialog();
+                activity.runOnUiThread(() -> dismissProgressDialog());
             }
 
             @Override
             public void onAdDismissed() {
                 clearAppOpenAd();
+                activity.runOnUiThread(() -> dismissProgressDialog());
             }
 
             @Override
             public void onAdClicked() {
-                // Called when a click is recorded for an ad.
+                activity.runOnUiThread(() -> dismissProgressDialog());
             }
 
             @Override
             public void onAdImpression(@Nullable final ImpressionData impressionData) {
-                // Called when an impression is recorded for an ad.
+                activity.runOnUiThread(() -> dismissProgressDialog());
             }
         };
         AppOpenAdLoadListener appOpenAdLoadListener = new AppOpenAdLoadListener() {
             @Override
             public void onAdLoaded(@NonNull final AppOpenAd appOpenAd) {
+                dismissProgressDialog();
                 mainAppOpenAd = appOpenAd;
-                appOpenAd.setAdEventListener(appOpenAdEventListener);
-                mainView.dismissProgressDialog();
-                mainAppOpenAd.show(activity);
+                activity.runOnUiThread(() -> {
+                    mainAppOpenAd.setAdEventListener(appOpenAdEventListener);
+                    mainAppOpenAd.show(activity);
+                });
             }
 
             @Override
             public void onAdFailedToLoad(@NonNull final AdRequestError adRequestError) {
-                mainView.dismissProgressDialog();
+                activity.runOnUiThread(() -> dismissProgressDialog());
             }
         };
 
         appOpenAdLoader.setAdLoadListener(appOpenAdLoadListener);
         appOpenAdLoader.loadAd(adRequestConfiguration);
-        mainView.dismissProgressDialog();
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            activity.runOnUiThread(this::dismissProgressDialog);
+        });
     }
 
     @NonNull
