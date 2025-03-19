@@ -10,7 +10,4 @@ import ru.plumsoftware.data.model.ui.Note;
 public interface MainView {
     void changeFilterButtonImage(@DrawableRes int res);
     void initRecyclerView(List<Note> notes, RecyclerView.LayoutManager layoutManager);
-
-    void showProgressDialog();
-    void dismissProgressDialog();
 }
