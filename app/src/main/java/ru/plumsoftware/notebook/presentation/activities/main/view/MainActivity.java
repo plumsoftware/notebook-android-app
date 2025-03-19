@@ -94,4 +94,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
         recyclerViewNotes.setAdapter(noteAdapter);
         recyclerViewNotes.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+//        Load notes
+        presenter.initNotes(new Conditions.All());
+    }
 }
