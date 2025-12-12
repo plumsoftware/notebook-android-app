@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk 35
+    compileSdk 36
 
     def localProperties = new Properties()
     def localPropertiesFile = rootProject.file("local.properties")
@@ -19,10 +19,10 @@ android {
 
     defaultConfig {
         applicationId "ru.plumsoftware.notebook"
-        minSdk 22
-        targetSdk 35
-        versionCode 33
-        versionName "2.0.10"
+        minSdk 23
+        targetSdk 36
+        versionCode 34
+        versionName "2.0.11"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -53,24 +53,24 @@ android {
 dependencies {
 
     //Autogenerate
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.13.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 
     //Yandex ads
-    implementation 'com.yandex.android:mobileads:7.11.0'
+    implementation 'com.yandex.android:mobileads:7.18.0'
 
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation 'com.github.bumptech.glide:glide:5.0.5'
 
     //Messaging
-    implementation 'com.google.firebase:firebase-messaging:24.1.0'
+    implementation 'com.google.firebase:firebase-messaging:25.0.1'
 
     //Analytics
-    implementation 'com.google.firebase:firebase-analytics:22.3.0'
+    implementation 'com.google.firebase:firebase-analytics:23.0.0'
 
     //Modules
     implementation project(':app-domain')
